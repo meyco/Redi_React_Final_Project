@@ -10,9 +10,22 @@ export default function App() {
     [], // 右のタワー
   ]);
 
+
+
   // 選択された円盤とその位置を管理
   const [selectedDisk, setSelectedDisk] = useState(null); // 選択された円盤のサイズ
   const [selectedTower, setSelectedTower] = useState(null); // 選択されたタワーのインデックス
+
+  // ドラッグ開始時に呼ばれる関数
+  const handleDragStart=(towerIndex, disk) =>{
+    setSelectedDisk(disk);
+    selectedTower(towerIndex);
+  };
+
+  const handleDrop = (towerIndex) => {
+    if(selectedDisk === null || selectedTower === null) return;
+  }
+
 
   // タワーがクリックされたときの動作
   const handleTowerClick = (towerIndex) => {
@@ -74,7 +87,11 @@ export default function App() {
           <Tower
             key={index}
             disks={disks}
-            onClick={() => handleTowerClick(index)}
+            towerIndex={index}
+            onDragStart={handleDragStart}
+            onDrop={handleDrop}
+            
+          // onClick={() => handleTowerClick(index)}
           />
         ))}
       </div>
