@@ -25,6 +25,23 @@ export default function App() {
       setSelectedDisk(tower[tower.length - 1]);
       setSelectedTower(towerIndex);
     } else {
+      // 同じタワーをクリックした場合は選択を解除
+      if (towerIndex === selectedTower) {
+        setSelectedDisk(null);
+        setSelectedTower(null);
+        return;
+      }
+
+      // 大きいディスクを小さいディスクの上に置けないようにする
+      const destinationTower = towers[towerIndex];
+      if (
+        destinationTower.length > 0 && // 移動先タワーにディスクがある場合
+        destinationTower[destinationTower.length - 1] < selectedDisk // 小さいディスクの上に大きいディスクを置こうとしている場合
+      ) {
+        alert("大きいディスクは小さいディスクの上に置けません");
+        return;
+      }
+
       // 移動先のタワーに円盤を移動
       const newTowers = towers.map((tower, index) => {
         if (index === selectedTower) {
@@ -50,7 +67,7 @@ export default function App() {
       <div
         style={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "center"
         }}
       >
         {towers.map((disks, index) => (
@@ -64,6 +81,3 @@ export default function App() {
     </div>
   );
 }
-
-
-//export default App
