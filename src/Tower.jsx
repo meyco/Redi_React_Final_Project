@@ -5,12 +5,16 @@ import Disk from "./Disk";
 //Tower.js で disks を使って Disk コンポーネントに各円盤の size を渡す。
 //Disk.js で受け取った size を使い、幅（width）を決定して表示。
 
-function Tower({ disks, onClick }) {
+function Tower({ disks, towerIndex, onDragStart, onDrop }) {
   //**Towerという関数コンポーネントを定義しており、disksというプロパティ（props）を受け取っています**。
   // App.jsからonClickプロパテが渡される。<Tower>コンポーネントの中の{onClick}
   return (
     //Towerコンポーネントの外側を包む<div>です。ここには**towerStyleというスタイル**が適用
-    <div onClick={onClick} style={towerStyle}>
+      <div
+        onDragOver={(e) => e.preventDefault()} // ドラッグ中のデフォルト動作を防ぐ
+        onDrop={() => onDrop(towerIndex)} // ドロップ時に呼ばれる
+        style={towerStyle}
+      >
       {/* disks配列の要素（サイズ）を1つずつ取り出し、それぞれを使って<Disk />コンポーネントを生成
        size：配列の各要素（円盤のサイズ）で、map()で取り出したもの。
         index：配列内の位置（何番目の要素か）を表すインデックスです。
@@ -20,7 +24,10 @@ function Tower({ disks, onClick }) {
         //Disk.jsのDiskコンポーネント。sizeをDiskコンポーネントに渡す
         //Diskコンポーネントが{size}の数字でDisk.js内で掛け算
         //keyを設定し表示のパフォーマンス向上。keyの数字を順番に渡す。
-        <Disk key={index} size={size} />
+        <Disk key={index}
+         size={size}
+         onDragStart={() => onDragStart(towerIndex, size)} // ドラッグ開始時の処理を渡す
+          />
       ))}
     </div>
   );
