@@ -18,44 +18,58 @@ export default function App() {
 
   // ドラッグ開始時に呼ばれる関数
   const handleDragStart = (towerIndex, disk) => {
+    //何を頼むか、味はどれが良いか？towerIndexとdiskはこの中でしか使えない
     console.log("Drag started:", { towerIndex, disk });
     setSelectedDisk(disk);
     setSelectedTower(towerIndex);
   };
 
-  
-const handleDrop = (towerIndex) => {
-  console.log("Drop at tower:", towerIndex);
-  console.log("Selected Disk:", selectedDisk);
-  console.log("Selected Tower:", selectedTower);
+  //ドロップした時の動き
+  const handleDrop = (targetTowerIndex) => {
+    console.log("Disk moved to tower:", targetTowerIndex);
+    console.log("Selected Disk number:", selectedDisk);
+    console.log("Disk moved from tower:", selectedTower);
 
-  if (selectedDisk === null || selectedTower === null) return;
+       //diskもtowerも選択してないとき
+    if (selectedDisk === null || selectedTower === null)
+      return;//処理を終える。nullにしないと処理がおわらない
 
-  const destinationTower = towers[towerIndex];
-  if (
-    destinationTower.length > 0 &&
-    destinationTower[destinationTower.length - 1] < selectedDisk
-  ) {
-    alert("大きいディスクは小さいディスクの上に置けません");
-    return;
-  }
+    const destinationTower = towers[targetTowerIndex];
+    //ドロップ先タワー。targetTowerIndexで指定されたタワーの番号をdestinationTowerに持つ
 
-  const newTowers = towers.map((tower, index) => {
-    if (index === selectedTower) {
-      return tower.slice(0, -1);
-    } else if (index === towerIndex) {
-      return [...tower, selectedDisk];
-    } else {
-      return tower;
+
+    if (
+      destinationTower.length > 0 &&  //ドロップ先のタワーにディスクが積まれているかをチェック。 空０かどうか
+      //&&「両方の条件がtrueの場合のみ」、true
+      destinationTower[destinationTower.length - 1] < selectedDisk
+    )
+    //Drop先タワーの配列の最後の要素が、ディスクより小さい時
+     {
+      alert("大きいディスクは小さいディスクの上に置けません");
+      return;
     }
-  });
 
-  setTowers(newTowers);
-  setSelectedDisk(null);
-  setSelectedTower(null);
-};
+    //実際にディスクを1つのタワーから別のタワーに動かす処理
+    const newTowers = towers.map((tower, index) => {//タワーのインデックスを一つずつ確認
+      //移動元のタワーの処理
+      if (index === selectedTower) {
+        return tower.slice(0, -1);//このタワーの一番上のディスクを取り除く
+        //行き先のタワーの処理
+      } else if (index === targetTowerIndex) {
+        //スプレッド構文、配列やオブジェクトの中身を「ばらして取り出す」
+        return [...tower, selectedDisk];//タワーの中身を取り出し、selectedDiskを最後に追加
+      } else {
+        return tower;//何もせず、タワーの配列を返す
+      }
+    });
+    
 
-      
+    setTowers(newTowers);
+    setSelectedDisk(null);
+    setSelectedTower(null);
+  };
+
+
 
   // // タワーがクリックされたときの動作
   // const handleTowerClick = (towerIndex) => {
@@ -115,12 +129,12 @@ const handleDrop = (towerIndex) => {
       >
         {towers.map((disks, index) => (
           <Tower
-          key={index}
-          disks={disks}
-          towerIndex={index}
-          // onClick={() => handleTowerClick(index)} // クリック用
-          onDragStart={handleDragStart} // ドラッグ用
-          onDrop={handleDrop} // ドロップ用
+            key={index}
+            disks={disks}
+            towerIndex={index}
+            // onClick={() => handleTowerClick(index)} // クリック用
+            onDragStart={handleDragStart} // ドラッグ用
+            onDrop={handleDrop} // ドロップ用
           />
         ))}
       </div>
