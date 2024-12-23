@@ -11,7 +11,6 @@ export default function App() {
   ]);
 
 
-
   // 選択された円盤とその位置を管理
   const [selectedDisk, setSelectedDisk] = useState(null); // 選択された円盤のサイズ
   const [selectedTower, setSelectedTower] = useState(null); // 選択されたタワーのインデックス
